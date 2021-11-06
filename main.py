@@ -20,8 +20,6 @@ num_6 = 0b01000001
 num_7 = 0b00011111
 num_8 = 0b00000001
 num_9 = 0b00001001
-num_10 = 0b1001111100000011
-num_11 = 0b1001111110011111
 
 
 def clear():
@@ -55,7 +53,11 @@ def write(value, n_of_bits):
 
 
 while True:
-    write(num_10, 16)
+    write(num_1 << 8 | num_0, 16)
     sleep(1)
-    write(num_11, 16)
+    write(num_1 << 8 | num_1, 16)
+    sleep(1)
+    write(num_1 << 8 | num_2, 16)
+    sleep(1)
+    write(num_1 << 8 | num_3, 16)
     sleep(1)
