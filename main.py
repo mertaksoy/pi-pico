@@ -1,9 +1,5 @@
-from machine import Pin, ADC
+from machine import Pin
 from time import sleep
-
-# TEMP Sensor #####
-adc = ADC(4)
-######################
 
 dp = Pin(0, Pin.OUT)
 cl = Pin(1, Pin.OUT)
@@ -24,6 +20,8 @@ num_6 = 0b01000001
 num_7 = 0b00011111
 num_8 = 0b00000001
 num_9 = 0b00001001
+num_10 = 0b1001111100000011
+num_11 = 0b1001111110011111
 
 
 def clear():
@@ -44,8 +42,8 @@ def latch():
     la.low()
 
 
-def write(value):
-    for i in range(8):
+def write(value, n_of_bits):
+    for i in range(n_of_bits):
         data = value >> i & 1
         if data == 0:
             dp.high()
@@ -56,29 +54,8 @@ def write(value):
     sleep(0.5)
 
 
-def calculateTemp():
-    voltage = adc.read_u16() * 3.3 / 65535
-    temp = 27 - (voltage - 0.706) / 0.001721
-
-
 while True:
-    write(num_0)
+    write(num_10, 16)
     sleep(1)
-    write(num_1)
-    sleep(1)
-    write(num_2)
-    sleep(1)
-    write(num_3)
-    sleep(1)
-    write(num_4)
-    sleep(1)
-    write(num_5)
-    sleep(1)
-    write(num_6)
-    sleep(1)
-    write(num_7)
-    sleep(1)
-    write(num_8)
-    sleep(1)
-    write(num_9)
+    write(num_11, 16)
     sleep(1)
