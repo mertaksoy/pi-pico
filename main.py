@@ -21,6 +21,8 @@ num_7 = 0b00011111
 num_8 = 0b00000001
 num_9 = 0b00001001
 
+numbers = [num_0, num_1, num_2, num_3, num_4, num_5, num_6, num_7, num_8, num_9]
+
 
 def clear():
     clr.low()
@@ -40,8 +42,8 @@ def latch():
     la.low()
 
 
-def write(value, n_of_bits):
-    for i in range(n_of_bits):
+def write(value):
+    for i in range(16):
         data = value >> i & 1
         if data == 0:
             dp.high()
@@ -52,12 +54,21 @@ def write(value, n_of_bits):
     sleep(0.5)
 
 
+def toBit(number):
+    if number < 10:
+        return numbers[0] << 8 | numbers[number]
+    elif number > 9 & number < 100:
+        digits = toDigits(number)
+        return numbers[digits[0]] << 8 | numbers[digits[1]]
+    else:
+        return numbers[0] << 8 | numbers[0]
+
+
+def toDigits(number):
+    return list(map(int, ' '.join(str(number)).split()))
+
+
 while True:
-    write(num_1 << 8 | num_0, 16)
-    sleep(1)
-    write(num_1 << 8 | num_1, 16)
-    sleep(1)
-    write(num_1 << 8 | num_2, 16)
-    sleep(1)
-    write(num_1 << 8 | num_3, 16)
-    sleep(1)
+    for i in range(99):
+        write(toBit(i))
+        sleep(1)
