@@ -1,10 +1,13 @@
 from machine import Pin
 from time import sleep
+import _thread
 
 dp = Pin(0, Pin.OUT)
 cl = Pin(1, Pin.OUT)
 la = Pin(2, Pin.OUT)
 clr = Pin(3, Pin.OUT, Pin.PULL_UP)
+
+dots = Pin(4, Pin.OUT)
 
 dp.value(0)
 cl.value(0)
@@ -67,6 +70,19 @@ def toBit(number):
 def toDigits(number):
     return list(map(int, ' '.join(str(number)).split()))
 
+
+def blink_clock_dots():
+    dots_high = False
+    while True:
+        if dots_high:
+            dots.low()
+        else:
+            dots.high()
+        dots_high = not dots_high
+        sleep(1)
+
+
+_thread.start_new_thread(blink_clock_dots, ())
 
 while True:
     for i in range(99):
