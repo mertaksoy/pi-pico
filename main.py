@@ -6,7 +6,7 @@ import myfont
 from time import sleep
 
 
-class DisplayState():
+class DisplayState:
     def __init__(self):
         self.text_row = 0
         self.text_col = 0
