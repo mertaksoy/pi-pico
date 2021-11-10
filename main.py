@@ -1,8 +1,9 @@
 from micropython import const
 import utime as time
-from machine import Pin, I2C
+from machine import Pin, I2C, ADC
 import framebuf
 import myfont
+from time import sleep
 
 
 class DisplayState():
@@ -337,13 +338,26 @@ class SH1106_I2C(SH1106):
         super().reset(self.res)
 
 
+# TEMP Sensor
+adc = ADC(4)
+
+
+def calculateTemp():
+    voltage = adc.read_u16() * 3.3 / 65535
+    return 27 - (voltage - 0.706) / 0.001721
+
+
 i2c = I2C(0, sda=Pin(4), scl=Pin(5), freq=400000)
 display = SH1106_I2C(128, 64, i2c, Pin(2), 0x3c)
 display.sleep(False)
 inverted = True
 
 wri = Writer(display, myfont)  # verbose = False to suppress console output
-Writer.set_textpos(display, 0, 0)  # In case a previous test has altered this
-# wri.printstring('Sunday\n12 Aug 2018\n10.30am')
-wri.printstring('Mert\nAksoy')
-display.show()
+
+while True:
+    print(calculateTemp())
+    Writer.set_textpos(display, 0, 0)  # In case a previous test has altered this
+    # wri.printstring('Sunday\n12 Aug 2018\n10.30am')
+    wri.printstring(str(round(calculateTemp(), 1)) + ' \'C')
+    display.show()
+    sleep(2)
