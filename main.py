@@ -112,55 +112,15 @@ class SH1106_I2C(SH1106):
         super().reset(self.res)
 
 
-class SH1106_SPI(SH1106):
-    def __init__(self, width, height, spi, dc, res=None, cs=None,
-                 external_vcc=False):
-        self.rate = 10 * 1000 * 1000
-        dc.init(dc.OUT, value=0)
-        if res is not None:
-            res.init(res.OUT, value=0)
-        if cs is not None:
-            cs.init(cs.OUT, value=1)
-        self.spi = spi
-        self.dc = dc
-        self.res = res
-        self.cs = cs
-        super().__init__(width, height, external_vcc)
-
-    def write_cmd(self, cmd):
-        self.spi.init(baudrate=self.rate, polarity=0, phase=0)
-        if self.cs is not None:
-            self.cs(1)
-            self.dc(0)
-            self.cs(0)
-            self.spi.write(bytearray([cmd]))
-            self.cs(1)
-        else:
-            self.dc(0)
-            self.spi.write(bytearray([cmd]))
-
-    def write_data(self, buf):
-        self.spi.init(baudrate=self.rate, polarity=0, phase=0)
-        if self.cs is not None:
-            self.cs(1)
-            self.dc(1)
-            self.cs(0)
-            self.spi.write(buf)
-            self.cs(1)
-        else:
-            self.dc(1)
-            self.spi.write(buf)
-
-    def reset(self):
-        super().reset(self.res)
-
-
 i2c = I2C(0, sda=Pin(4), scl=Pin(5), freq=400000)
 display = SH1106_I2C(128, 64, i2c, Pin(2), 0x3c)
 display.sleep(False)
+inverted = True
 
 while True:
-    for i in range(64):
+    for i in range(65):
         display.fill(0)
-        display.text('Mert Aksoy', 0, i, 1)
+        display.text('Code Square SE', 0, i, 1)
         display.show()
+    display.invert(inverted)
+    inverted = not inverted
